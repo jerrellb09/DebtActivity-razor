@@ -1,0 +1,451 @@
+﻿@{
+
+    <div class="panel">
+        <div class="">
+            <body>
+                <script src="~/Scripts/tiff/jquery-3.2.1.js"></script>
+                <script src="~/Scripts/tiff/tiff.js"></script>
+                <script src="~/Scripts/tiff/conditionize.jquery.js"></script>
+                <!--<canvas id="layer2" style="z-index:1; position:absolute; left:0px; top:0px;"> -->
+                <canvas id="layer2" class="layer2"></canvas>
+                <div class="btncolumn" id="buttons">
+                    <form action="caption.php" method="post" name="stamp" enctype="multipart/form-data">
+                        <label class="filelabel">Select File</label>
+                        <input type="file" id="file" name="filename" class="openfile" required />
+                        <br>
+                        Page
+                        <input name="curpage" class="pageinfo" readonly id="cpage" size="6">
+                        Of
+                        <input type="text" name="page" class="pageinfo" readonly id="pages" size="10">
+                        <br><br>
+                        <button type="button" class="prev" id="prevbtn">&laquo; Previous</button>
+                        <button type="button" class="next" id="nextbtn">Next &raquo;</button>
+                        <br>
+                        <label>Zoom</label>
+                        <select name="zoom" class="selscale" id="scale">
+                            <option value="0.10">10%</option>
+                            <option value="0.15">15%</option>
+                            <option value="0.20">20%</option>
+                            <option value="0.25">25%</option>
+                            <option value="0.30">30%</option>
+                            <option value="0.35" selected>35%</option>
+                            <option value="0.40">40%</option>
+                            <option value="0.45">45%</option>
+                            <option value="0.50">50%</option>
+                            <option value="0.60">60%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1.00">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.50">150%</option>
+                        </select>
+                        <br><br>
+                        <div class="imageinfo">
+                            <!--<form action="caption.php" method="post" name="stamp" enctype="multipart/form-data"> -->
+                            Select an Action <br>
+                            <input type="radio" name="action" class="action" id="captool" value="stamp" checked> Stamp<br>
+                            <input type="radio" name="action" class="action" id="dstool" value="deskew">Deskew <br>
+                            <input type="radio" name="action" class="action" id="redtool" value="redact"> Redact<br>
+                            <input type="radio" name="action" class="action" id="etool" value="erase"> Erase<br>
+                            <br>
+                            <!--<div class="conditional" data-cond-option="action" data-cond-value="stamp" data-cond-operator="==">
+                                <textarea name="stamptext" rows="3" cols="32"></textarea>
+                                <br><br>
+                            </div> -->
+                            <textarea name="stamptext" placeholder="Enter the text to add to the image here" rows="3" cols="32" class="conditional" data-cond-option="action" data-cond-value="stamp"></textarea>
+                            <div class="conditional" data-cond-option="action" data-cond-value="deskew" data-cond-operator="==">
+                                <input type="radio" name="skewpage" id="dskpages" value="all"> All Pages <br>
+                                <input type="radio" name="skewpage" id="dskpages" value="current"> Current Page <br><br>
+                                <input type="submit" name="deskew" id="deskew" class="button1" value="Deskew">
+                            </div>
+                            <div class="conditional" data-cond-option="action" data-cond-value="redact,erase,stamp" data-cond-operator="in">
+                                <br>Select a Shape <br>
+                                <input type="radio" name="radio" class="tool" id="rectool" value="rectangle" checked> Rectangle<br>
+                                <input type="radio" name="radio" class="tool" id="cirtool" value="circle"><span id="circtext">Circle or Ellipse</span><br>
+                                <div class="conditional" data-cond-option="radio" data-cond-value="circle">
+                                    Center X,Y
+                                    <input type="text" name="xcenter" class="inptext" readonly id="centerx" size="8" required>
+                                    <input type="text" name="ycenter" class="inptext" readonly id="centery" size="8" required>
+                                    <br>
+                                    Radius X,Y
+                                    <input type="text" name="xradius" class="inptext" readonly id="radiusx" size="8" required>
+                                    <input type="text" name="yradius" class="inptext" readonly id="radiusy" size="8" required>
+                                </div>
+                                <div class="conditional" data-cond-option="radio" data-cond-value="rectangle">
+                                    X, Y
+                                    <input type="text" name="xcord" class="inptext" readonly id="xtext" size="8" required>
+                                    <input type="text" name="ycord" class="inptext" readonly id="ytext" size="8" required>
+                                    <br>
+                                    <label>Width</label>
+                                    <input type="text" name="cwidth" class="distext" readonly id="boxw" required>
+                                    <br>
+                                    <label>Height</label>
+                                    <input type="text" name="cheight" class="distext" readonly id="boxh" required>
+                                </div>
+                                <div class="conditional" data-cond-option="action" data-cond-value="stamp" data-cond-operator="==">
+                                    <br>
+                                    <input type="submit" name="submit" id="stamp" class="button1" value="Stamp">
+                                </div>
+                                <div class="conditional" data-cond-option="action" data-cond-value="redact">
+                                    <br>
+                                    <input type="submit" name="redact" class="button1" value="Redact">
+                                </div>
+                                <div class="conditional" data-cond-option="action" data-cond-value="erase">
+                                    <br>
+                                    <input type="submit" name="erase" class="button1" value="Erase">
+                                </div>
+                                <br>
+                                <!--<input type="submit" name="redactbtn" id="redact" class="button1" value="Redact">
+                                <input type="submit" name="erasebtn" id="erase" class="button1" value="Erase"> -->
+                            </div>
+                            <br>
+                            <p></p>
+                    </form>
+                </div>
+            </body>
+            <div id="view-area">
+                Some random stuff
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+
+        var newlayer = document.getElementById("layer2");
+        var ctx2 = newlayer.getContext('2d');
+        var scaleval;
+        var canvas;
+        var x1;
+        var y1;
+        var cw;
+        var ch;
+        /*var cw = newlayer.width;
+        var ch = newlayer.height;
+        var selected = $("input[name='radio']:checked" ).val();
+        var action = $("input[name='action']:checked").val();
+        var tool = ('Selected Tool: ' + selected );
+        var selaction = ('Selected Action: ' + action); */
+
+        $(function () {
+            var reader = new FileReader();
+            function show(file) {
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        var buffer = e.target.result;
+                        scaleval = $('#scale').val();
+                        var tiff = new Tiff({ buffer: buffer }); //{buffer: xhr.response}
+                        var len = tiff.countDirectory();
+                        var xres = tiff.getField(Tiff.Tag.XRESOLUTION);
+                        /* think there is a bug in tiff.js getting X or Y resolution , conversions based on testing several tiff files*/
+                        if (xres == 1128792064) {
+                            var resolution = 200;
+                        }
+                        if (xres == 1133903872) {
+                            var resolution = 300;
+                        }
+
+                        if (xres == 1137180672) {
+                            var resolution = 400;
+                        }
+
+                        if (xres == 1142292480) {
+                            var resolution = 600;
+                        }
+                        $('#resolution').val(resolution);
+                        var resunit = tiff.getField(Tiff.Tag.RESOLUTIONUNIT);
+                        /*var index = tiff.currentDirectory();*/
+                        var theight = tiff.height();
+                        $('#tifheight').val(theight);
+                        var twidth = tiff.width();
+                        $('#tifwidth').val(twidth);
+                        $('#pages').val(len);
+                        document.getElementById("scale").addEventListener("click", showPage);
+
+                        function scaleImage() {
+                            scaleval = $('#scale').val();
+                        }
+
+                        document.getElementById("nextbtn").addEventListener("click", nextPage);
+                        document.getElementById("prevbtn").addEventListener("click", prevPage);
+
+                        function showImage() {
+                            scaleImage();
+      /*var*/ canvas = tiff.toCanvas();
+                            if (canvas) {
+                                canvas.setAttribute('id', 'tifcanvas');
+                                canvas.setAttribute('class', 'layer1');
+                                //$('canvas').remove();
+                                $('#tifcanvas').remove();
+                                //canvas.setAttribute('onclick','cnvs_setCoordinates(event)');
+                                canvas.setAttribute('style', 'width:' + (twidth * scaleval) + 'px; height: ' + (theight * scaleval) + 'px; border: ' + 1 + 'px solid blue;');
+                                //newlayer.setAttribute('style', 'width:' + (twidth*scaleval) + 'px; height: ' + (theight*scaleval) + 'px; border: ' + 1 + 'px solid blue;');
+                                //canvas.width = Math.round(twidth*scaleval);
+                                //canvas.height = Math.round(theight*scaleval);
+                                cw = newlayer.width = Math.round(twidth * scaleval);
+
+                                ch = newlayer.height = Math.round(theight * scaleval);
+                                //clearCanvas();
+                            }
+                            $('#view-area').append(canvas);
+                        }
+
+                        function showPage() {
+                            var index = tiff.currentDirectory();
+                            tiff.setDirectory(index);
+                            showImage();
+                            var page = index + 1;
+                            $('#cpage').val(page);
+                        }
+
+                        showPage();
+
+                        function nextPage() {
+                            var index = tiff.currentDirectory();
+                            if (index < (len - 1)) {
+                                var setindex = ++index;
+                                tiff.setDirectory(setindex);
+                                index = tiff.currentDirectory();
+                            }
+                            else {
+                                setindex = (len - 1);;
+                                tiff.setDirectory(setindex);
+                                index = tiff.currentDirectory();
+                            }
+                            var page = index + 1;
+                            $('#cpage').val(page);
+                            showImage();
+                        }
+
+                        function prevPage() {
+                            var index = tiff.currentDirectory();
+                            if (index > 0) {
+                                var setindex = --index;
+                            }
+                            else { setindex = 0; }
+                            tiff.setDirectory(setindex);
+                            index = tiff.currentDirectory();
+                            var page = index + 1;
+                            $('#cpage').val(page);
+                            showImage();
+                        }
+                    };
+                })(file);
+                reader.readAsArrayBuffer(file);
+            }
+
+            $('#file').on('change', function (event) {
+                show(event.target.files[0]);
+            });
+
+        });
+
+        var selected = $("input[name='radio']:checked").val();
+        var action = $("input[name='action']:checked").val();
+        var tool = ('Selected Tool: ' + selected);
+        var selaction = ('Selected Action: ' + action);
+        if (action == 'stamp') {
+            rectDraw();
+            $('#cirtool').attr('disabled', true);
+            $('#rectool').attr('checked', true);
+            $('#cirtool').attr('hidden', true);
+            $('#cirtool').attr('checked', false);
+            $('#circtext').text('');
+        }
+        else {
+            $('#cirtool').attr('disabled', false);
+            $('#cirtool').attr('hidden', false);
+            $('#circtext').text('Circle or Ellipse');
+        }
+
+
+        if (selected == 'circle') {
+            circleDraw();
+            clearCanvas();
+        }
+        if (selected == 'rectangle') {
+            rectDraw();
+        }
+
+        $('p').text(tool + '    ' + selaction);
+
+        function clearText() {
+            $('textarea').val('');
+            $('#centerx').val('');
+            $('#centery').val('');
+            $('#radiusx').val('');
+            $('#radiusy').val('');
+            $('#ytext').val('');
+            $('#boxh').val('');
+            $('#xtext').val('');
+            $('#boxw').val('');
+        }
+
+
+        $('input').on('change', function () {
+            //$('#cirtool').on( 'input',function() {
+            ctx2.clearRect(0, 0, cw, ch);
+            //var selected = $( 'input:checked' ).val();
+            selected = $("input[name='radio']:checked").val();
+            tool = ('Selected Tool: ' + selected);
+            action = $("input[name='action']:checked").val()
+            selaction = ('Selected Action: ' + action);
+
+            $("input[name='radio']").on('change', function () {
+                clearText()
+            });
+
+            $("input[name='action']").on('change', function () {
+                clearText();
+                $('#cirtool').attr('checked', false);
+                if (action == 'stamp') {
+                    $('#cirtool').attr('disabled', true);
+                    $('#rectool').attr('checked', true);
+                    $('#cirtool').attr('hidden', true);
+                    $('#cirtool').attr('checked', false);
+                    $('#circtext').text('');
+                }
+                else {
+                    $('#cirtool').attr('disabled', false);
+                    $('#cirtool').attr('hidden', false);
+                    $('#circtext').text('Circle or Ellipse');
+                }
+            });
+
+
+
+            if (selected == 'circle') {
+                circleDraw();
+
+            }
+            if (selected == 'rectangle') {
+                rectDraw();
+
+            }
+            $("p").text(tool + '    ' + selaction);
+        });
+
+        function circleDraw() {
+            //ctx2.translate(0.5, 0.5);
+            var isDown = false;
+            newlayer.onmousedown = function (e) {
+                var recta = newlayer.getBoundingClientRect();
+                x1 = e.clientX - recta.left;
+                y1 = e.clientY - recta.top;
+                isDown = true;
+            }
+            newlayer.onmouseup = function (e) {
+                isDown = false;
+            }
+
+            newlayer.onmousemove = function (e) {
+
+                if (!isDown) return;
+
+                var recta = newlayer.getBoundingClientRect(),
+                    x2 = e.clientX - recta.left,
+                    y2 = e.clientY - recta.top;
+
+                ctx2.clearRect(0, 0, cw, ch);
+                drawEllipse(x1, y1, x2, y2);
+
+                ctx2.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx2.strokeRect(x1, y1, x2 - x1, y2 - y1);
+            }
+
+            function drawEllipse(x1, y1, x2, y2) {
+                var radiusX = (x2 - x1),  // *0.5
+                    radiusY = (y2 - y1),   // *0.5
+                    centerX = x1 + radiusX,
+                    centerY = y1 + radiusY,
+                    step = 0.01,
+                    a = step,
+                    pi2 = Math.PI * 2 - step;
+
+                $('#centerx').val(centerX);
+                $('#centery').val(centerY);
+                $('#radiusx').val(radiusX);
+                $('#radiusy').val(radiusY);
+
+                ctx2.beginPath();
+                ctx2.moveTo(centerX + radiusX * Math.cos(0),
+                    centerY + radiusY * Math.sin(0));
+
+                for (; a < pi2; a += step) {
+                    ctx2.lineTo(centerX + radiusX * Math.cos(a),
+                        centerY + radiusY * Math.sin(a));
+                }
+
+                ctx2.closePath();
+                ctx2.strokeStyle = '#000';
+                ctx2.stroke();
+            }
+        }
+
+        function rectDraw() {
+            /*function init() {
+                newlayer.addEventListener('mousedown', mouseDown, false);
+                newlayer.addEventListener('mouseup', mouseUp, false);
+                newlayer.addEventListener('mousemove', mouseMove, false);
+            }*/
+            rect = {}
+            var drag = false;
+            //function mouseUp() {
+            newlayer.onmouseup = function (e) {
+                drag = false;
+            }
+
+            //function mouseDown(e) {
+            newlayer.onmousedown = function (e) {
+                x = rect.startX = e.pageX - this.offsetLeft;
+                y = rect.startY = e.pageY - this.offsetTop;
+                drag = true;
+                $('#xtext').val(x);
+                $('#ytext').val(y);
+            }
+
+
+            //function mouseMove(e) {
+            newlayer.onmousemove = function (e) {
+                if (drag) {
+                    w = rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+                    h = rect.h = (e.pageY - this.offsetTop) - rect.startY;
+                    ctx2.clearRect(0, 0, cw, ch);
+                    draw();
+                    if (w < 0) {
+                        nx = (x + w);
+                        nw = Math.abs(w);
+                        $('#xtext').val(nx);
+                        $('#boxw').val(nw);
+                    }
+                    else {
+                        $('#boxw').val(w);
+                        //$('#boxh').val(h);
+                    }
+                    if (h < 0) {
+                        ny = (y + h);
+                        nh = Math.abs(h);
+                        $('#ytext').val(ny);
+                        $('#boxh').val(nh);
+                    }
+                    else {
+                        $('#boxh').val(h);
+                        //$('#boxh').val(h);
+                    }
+                }
+            }
+
+            function draw() {
+                //ctx2.translate(0.5, 0.5);
+                ctx2.fillStyle = "#FF0000";
+                ctx2.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+            }
+            //init();
+        }
+        function clearCanvas() {
+            ctx2.clearRect(0, 0, cw, ch);
+        }
+    </script>
+    <script>
+        $('.conditional').conditionize();
+    </script>
+}

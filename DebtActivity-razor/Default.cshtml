@@ -1,0 +1,144 @@
+﻿@using ExcelDataReader;
+@using WebMatrix.Data;
+@using System.IO;
+@{
+    Layout = "~/_SiteLayout.cshtml";
+    //ViewBag.Title = "Home Page";
+
+
+    @*<div class="jumbotron">
+            <form action="~/Home/SaveUploadedFile" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="width: 50px; background: none; border: none;">
+                <div class="fallback">
+                    <input name="file" type="file" multiple />
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+        </div>*@
+
+
+    var db = Database.Open("centaur");
+    db.Execute("truncate table debtactivity");
+
+    //string str = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=S:\\Jerrell Test Database.accdb";
+    //string constr = "providerName=System.Data.SqlClient;Server=N-17;database=dbtest;Integrated Security=True";
+    string sql = "";
+
+    var filePath = "c:\\users\\Jerrell\\Downloads\\Chase0513_Activity.xlsx";
+    DateTime fileDatemodified = File.GetLastWriteTime(filePath);
+    var currentTime = DateTime.Now;
+
+    var dirPath = "C:\\users\\Jerrell\\Desktop\\Sample";
+    DirectoryInfo di = new DirectoryInfo(dirPath);
+    FileInfo[] files = di.GetFiles("*.tif");
+    var filePaths = Directory.GetFiles(dirPath, "*.tif", SearchOption.AllDirectories);
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    foreach (var child in files)
+        {
+            <div>
+                <ul>
+                    <input type="radio" id="filerad" name="filename" value="@dirPath\@child.Name" />
+                    <li><span>@child.Name</span></li>
+                </ul>
+            </div>
+        }
+
+
+    using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+    {
+
+
+        <div class="container">
+            <button type="button" class="btn btn-success " data-toggle="collapse" data-target=".collapse">Show Activity</button>
+            <div class="" id="demo">
+                this thing is not working
+            </div>
+
+            <div id="tbl" class="">
+                <table class="table table-bordered table-striped table-hover collapse" id="activityTbl">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Transaction Date</th>
+                            <th>Post Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @using (var reader = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            do
+                            {
+                                while (reader.Read())
+                                {
+                                    var type = reader.GetValue(0);
+                                    if ((type != null))
+                                    {
+                                        var transDate = reader.GetValue(1);
+                                        var postDate = reader.GetValue(2);
+                                        var description = reader.GetValue(3);
+                                        var amount = reader.GetValue(4);
+                                        var category = reader.GetValue(5);
+
+
+
+                                        <tr>
+                                            <td> @type </td>
+                                            <td> @transDate </td>
+                                            <td> @postDate </td>
+                                            <td> @description </td>
+                                            <td> @amount </td>
+                                            <td> @category </td>
+                                        </tr>
+
+
+
+                                        //if (fileDatemodified < currentTime)
+                                        //{
+                                        //    sql = new OleDbCommand( "INSERT into CalampHistory ([Received Timestamp], [Vehicle Name], ESN , [Air ID], [Account Name], Latitude, Longitude, [Alert Type], Speed, [Geo Address]) VALUES (@0, @1, @2, @3, @4, @5, @6 ,@7,@8,@9,@10)");
+
+                                        //    .Execute(sql, timestamp, account, esn, airid, accountname, latitude, longitude, alerttype, speed, geoaddress);
+                                        //}
+
+                                        if (fileDatemodified < currentTime)
+                                        {
+                                            sql = "INSERT into debtactivity (Type, [Trans_Date], [Post_Date] , [Description], amount, category) VALUES (@0, @1, @2, @3, @4, @5)";
+
+                                            db.Execute(sql, type, transDate, postDate, description, amount, category);
+                                        }
+
+                                    }
+                                }
+                            }
+                            while (reader.NextResult());
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-area">
+
+        </div>
+
+
+
+    }
+
+
+    @RenderPage("/Shared/_TiffViewer.cshtml");
+
+    @RenderPage("/Shared/_ActivityList.cshtml");
+
+}
+
+
+
+

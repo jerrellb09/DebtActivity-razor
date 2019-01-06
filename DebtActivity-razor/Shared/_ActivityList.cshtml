@@ -1,0 +1,106 @@
+﻿@{
+
+    <div>
+
+        <input type="text" id="activity" />
+        <button type="submit" id="retrieve">Get Activity</button>
+
+        <select name="activityList" multiple="multiple" id="resultBox">
+            <option> somestuff</option>
+        </select>
+
+        <div id="result">
+            Something gets put here
+            <p> Another paragraph</p>
+        </div>
+        <table id="table">
+            <tr>
+                <th>Desc</th>
+            </tr>
+        </table>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+                integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+                crossorigin="anonymous"></script>
+    <script>
+        //function myFunction() {
+
+        //    var activity = document.getElementById("activity").value;
+        //    //location.href = "/Services/GetPaymentActivity/?type=" + activity;
+        //    var xhttp = new XMLHttpRequest();
+        //    xhttp.onreadystatechange = function () {
+        //        if (this.readyState == 4 && this.status == 200) {
+        //            document.getElementById("result").innerHTML = this.responseText;
+        //            //$.each(xhttp, function (i, value) {
+        //            //    $('#resultBox').append($('<option>').text(value).attr('value', value));
+        //        }
+        //    };
+        //    xhttp.open("GET", "/Services/GetPaymentActivity/?type=" + activity, true);
+        //    xhttp.send();
+        //};
+
+        //$(document).ready(function () {
+        //    $("button").click(function () {
+        //        $.getJSON("/Services/GetPaymentActivity/",
+        //            {
+        //                type: $("#activity").val()
+        //            },
+        //            function (result) {
+        //                var activity = '';
+        //                $.each(result, function (i, item) {
+        //                    activity += '<tr>';
+        //                    activity += '<td>' + item.desc + '</td>';
+        //                    activity += '</tr>';
+        //                    //$("#result").append(field + " ");
+        //                });
+        //                $('#table').append(activity);
+        //            });
+        //    });
+        //});
+
+
+
+        $(document).ready(function () {
+            $('button').click(function () {
+                //var activity = $("#activity").val();
+                $.ajax(
+                    {
+                        type: 'GET',
+                        url: '/Services/GetPaymentActivity/',
+                        data: { type: $('#activity').val() },
+                        //contentType: 'application/json',
+                        datatype: 'json',
+                        success: function (info) {
+                            $.each(JSON.parse(info), function (i, item) {
+                                //$("#result").append().text(info.type + "-" + info.desc + info.amount + info.cat);
+                                $("#result").append("<br />" + item.type + "-" + item.desc  + item.amount + "-" +  item.cat);
+                            }                                
+                        )}
+                    });
+            });
+        });
+
+                    //    var $activity = $("#activity").val();
+                    //    $.ajax({
+                    //        url: '/Services/GetPaymentActivity/',
+                    //        type: 'GET',
+                    //        data: 'type=' + $activity,
+                    //        //dataType: 'json',
+                    //        success: function (data) {
+                    //            console.log('success', data);
+                    //            //$.each(json, function (i, value) {
+                    //            //    $('#resultBox').append($('<option>').text(value).attr('value', value));
+                    //            //});
+                    //        }
+                    //        //$("#resultBox").on("change", getActivity);
+                    //    });
+                    //});
+
+
+    </script>
+
+
+}
