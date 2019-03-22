@@ -1,13 +1,15 @@
 ﻿@{
 
     <div class="panel">
-        <div class="">
+        <div id="tifPanel">
             <body>
                 <script src="~/Scripts/tiff/jquery-3.2.1.js"></script>
                 <script src="~/Scripts/tiff/tiff.js"></script>
                 <script src="~/Scripts/tiff/conditionize.jquery.js"></script>
                 <!--<canvas id="layer2" style="z-index:1; position:absolute; left:0px; top:0px;"> -->
-                <canvas id="layer2" class="layer2"></canvas>
+                <div id="tiffWrapper">
+                    <canvas id="layer2" class="layer2"></canvas>
+                </div>                
                 <div class="btncolumn" id="buttons">
                     <form action="caption.php" method="post" name="stamp" enctype="multipart/form-data">
                         <label class="filelabel">Select File</label>
@@ -186,7 +188,8 @@
                                 ch = newlayer.height = Math.round(theight * scaleval);
                                 //clearCanvas();
                             }
-                            $('#view-area').append(canvas);
+                            //$('#view-area').append(canvas);
+                            $('#tiffWrapper').append(canvas);
                         }
 
                         function showPage() {

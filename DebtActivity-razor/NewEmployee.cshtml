@@ -1,0 +1,92 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    
+    <style>
+        .something {
+            color: red;
+        }
+
+        .card-body {
+            background: #ccff66;
+        }
+
+        .card-header {
+            background: #66ffcc;
+        }
+        b {
+            color: blueviolet;
+        }
+        form {
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+        }
+
+        label {
+            float: left;
+            grid-column: 1 / 2;
+            /*width: 200px;*/
+            /*padding-right: 24px;*/
+        }
+
+        input, button {
+            float: right;
+            grid-column: 2 / 3;
+            /*width: calc(100% - 200px);*/
+        }
+    </style>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card-header ">
+                    <b>Add New Employee</b> <span class="fa fa-chevron-down float-right"></span>
+                </div>
+                <div class='card-body'>
+                    <span class="something">Testing</span>
+                    <div>
+                        <form method="post" action="~/Services/CreateNewEmployee.cshtml">
+                            <label for="firstname">First Name: </label>
+                            <input id="firstname" type="text" name="firstname" />
+                            <label for="lastname">Last Name: </label>
+                            <input id="lastname" type="text" name="lastname"/>
+                            <label for="position">Position: </label>
+                            <input id="position" type="text" name="position" />
+                            <label for="telephone">Telephone: </label>
+                            <input id="telephone" type="text" name="telephone" />
+
+                                <button id="createEmpbtn" class="btn-primary" type="submit">Create Employee</button>
+
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-header ">
+                    <b>Find Employee</b><span class="fa fa-chevron-down float-right"></span>
+                </div>
+                <div class='card-body '>
+                    One of three columns <span class="something">Testing </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-header ">
+                    <b>Remove Employee</b><span class="fa fa-chevron-down float-right"></span>
+                </div>
+                <div class='card-body '>
+                    One of three columns <span class="something">Testing</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+    <script>
+        $('.card-header').on("click", function (e) {
+            $(this).parent().children('.card-body').slideToggle();
+            $(this).find("span.fa-chevron-down").toggleClass("fa-flip-vertical")
+        })
+
+    </script>

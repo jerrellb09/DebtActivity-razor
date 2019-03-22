@@ -6,8 +6,11 @@ using System.Web;
 /// <summary>
 /// Summary description for utility
 /// </summary>
-public static class utility
+public static class Utility
 {
-   
+    public static void PDFtoTiff()
+    {
+
+    }
    
 }

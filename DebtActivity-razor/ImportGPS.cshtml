@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+
+<div id="wrapper">
+    <input type="file" id="input-excel" />
+
+</div>
+
+    <script lang="javascript" src="~/Scripts/SheetJS/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Scripts/DataTables/datatables.css" />
+    <script type="text/javascript" charset="utf-8" src="~/Scripts/DataTables/datatables.js"></script>
+
+    <script>
+
+
+        $('#input-excel').change(function (e) {
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(e.target.files[0]);
+
+            reader.onload = function (e) {
+                data = new Uint8Array(reader.result);           
+                var wb = XLSX.read(data, { type: 'array' });
+
+                var htmlstr = XLSX.write(wb, { sheet: "Sheet1", type: "binary", bookType: 'html' });
+                $('#wrapper')[0].innerHTML += htmlstr;
+             
+                $('table').attr('id', 'example');
+                $("tbody").before(
+                    $("<thead><tr><th>Display Name</th><th>Odometer</th><th>Heading</th><th>Status</th></tr></thead>"));
+
+                $('table').DataTable({
+                });
+            }
+        });
+
+
+
+    </script>
+}

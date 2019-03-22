@@ -1,0 +1,15 @@
+﻿@{
+    var firstName = Request.Form["firstname"];
+    var lastName = Request.Form["lastname"];
+    var position = Request.Form["position"];
+    var telephone = Request.Form["telephone"];
+
+    var db = Database.Open("Centaur");
+
+    var sql = @"INSERT into ActiveDirectoryUser (firstname, lastname, position, telephone) values (@0, @1, @2, @3)";
+
+    var results = db.Query(sql, firstName, lastName, position, telephone);
+
+    //db.Query
+
+}

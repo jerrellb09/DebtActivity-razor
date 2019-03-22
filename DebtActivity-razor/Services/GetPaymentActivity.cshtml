@@ -4,7 +4,6 @@
     var sql = @"Select Type, [Description], Amount, [Category] from debtactivity where [Type] = @0";
 
     var type = Request.QueryString["type"];
-    //db.Execute(sql, type);
     var result = db.Query(sql, type);
     var info = result.Select(x => new
     {
@@ -15,22 +14,4 @@
     });
 
     Json.Write(info, Response.Output);
-    
-    //Response.ContentType = "application/json";
-    //Response.Redirect("/Default.cshtml");
-
-
 }
-
-@*<table>
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Transaction Date</th>
-            <th>Post Date</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Category</th>
-        </tr>
-    </thead>
-</table>*@
