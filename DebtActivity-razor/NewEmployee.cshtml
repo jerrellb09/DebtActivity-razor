@@ -1,5 +1,7 @@
 ﻿@{
     Layout = "~/_SiteLayout.cshtml";
+
+    List<dynamic> Employees;
     
     <style>
         .something {
@@ -8,10 +10,17 @@
 
         .card-body {
             background: #ccff66;
+            overflow: hidden;
+            display: grid;
+            /*grid-template-columns: 200px 1fr;*/
         }
 
         .card-header {
             background: #66ffcc;
+        }
+
+        .emp-card-body{
+            background: #ffffff;
         }
         b {
             color: blueviolet;
@@ -47,7 +56,7 @@
                     <div>
                         <form method="post" action="~/Services/CreateNewEmployee.cshtml">
                             <label for="firstname">First Name: </label>
-                            <input id="firstname" type="text" name="firstname" />
+                            <input id="firstnameCreate" type="text" name="firstname" />
                             <label for="lastname">Last Name: </label>
                             <input id="lastname" type="text" name="lastname"/>
                             <label for="position">Position: </label>
@@ -63,30 +72,112 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <div class="card-header ">
                     <b>Find Employee</b><span class="fa fa-chevron-down float-right"></span>
                 </div>
                 <div class='card-body '>
-                    One of three columns <span class="something">Testing </span>
+                    @*<form @*method="post" action="">*@
+                        <label for="firstname">First Name: </label>
+                        <input id="firstname" type="text" name="firstnameSearch" />
+                        <label for="lastname">Last Name: </label>
+                        <input id="lastname" type="text" name="lastname" />
+                        <label for="position">Position: </label>
+                        <input id="position" type="text" name="position" />
+                        <label for="telephone">Telephone: </label>
+                        <input id="telephone" type="text" name="telephone" />
+                        
+
+                        <button id="SearchEmpbtn" class="btn-primary" type="submit">Search Employee</button>
+                        <button id="SearchAllEmp" class="btn-link btn-sm" type="submit">Find All Employees</button>
+
+
+                    @*</form>*@
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="card-header ">
                     <b>Remove Employee</b><span class="fa fa-chevron-down float-right"></span>
                 </div>
                 <div class='card-body '>
                     One of three columns <span class="something">Testing</span>
                 </div>
-
             </div>
+            @*<div class="container">*@
+                @*<div class="row">*@
+                    <div class="col-md-10">
+                        <div class="card-header ">
+                            The following employees were found:
+                        </div>
+                        <div class="card-body empArea">
+                            First employee:
+                            @*@foreach (var emp in Employees)*@
+                        </div>
+                    </div>
+                @*</div>*@
+            @*</div>*@ @*container*@
         </div>
     </div>
 }
     <script>
         $('.card-header').on("click", function (e) {
-            $(this).parent().children('.card-body').slideToggle();
+            $(this).parents().children('.card-body').slideToggle();
             $(this).find("span.fa-chevron-down").toggleClass("fa-flip-vertical")
         })
+
+
+        $('#SearchEmpbtn').on("click", function () {
+            $.ajax({
+                type: 'POST',
+                datatype: 'json',
+                data: {
+                    firstname: $('#firstname').val(),
+                    lastname: $('#lastname').val(),
+                    position: $('#position').val(),
+                    telephone: $('#telephone').val()
+                },
+                url: '/Services/FindEmployee',
+                success: function (per) {
+                    $.each(JSON.parse(per), function (i, item) {
+                        var div0 = $("<div>", { "class": "col-md-4" })
+                        var div1 = $("<div>", { "class": "card-header" }).text(item.firstname);
+                        var div2 = $("<div>", { "class": "card-body emp-card-body " }).text(item.position + " " + item.telephone);
+                        var span0 = $("<span>", {"class": "fa fa-chevron-down float-right"})
+                        $(".empArea").append(div0);
+                        div0.append(div1, div2);
+                        div1.append(span0);
+                        console.log(info);
+                    }
+                    )
+                    
+                },
+                error: function () {
+                    alert('data did not send');
+                }
+            })
+        })
+
+        $('#SearchAllEmp').on("click", function () {
+            $.ajax({
+                type: 'POST',
+                datatype: 'json',
+                data: {
+                    findAll: "true"
+                },
+                url: '/Services/FindEmployee',
+                success: function (per) {                    
+                    $.each(JSON.parse(per), function (i, item) {
+                        var div0 = $("<div>", { "class": "col-md-4" })
+                        var div1 = $("<div>", { "class": "card-header" }).text(item.firstname);
+                        var div2 = $("<div>", { "class": "card-body emp-card-body " }).text(item.position + " " + item.telephone);
+                        var span0 = $("<span>", { "class": "fa fa-chevron-down float-right" })
+                        $(".empArea").append(div0);
+                        div0.append(div1, div2);
+                        div1.append(span0);
+                    }
+                )}
+            })
+        })
+
 
     </script>

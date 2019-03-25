@@ -1,0 +1,48 @@
+﻿ 
+@{
+
+    // var empployee = Json.Decode();
+
+    string firstName = Request.Form["firstname"];
+    var lastName = Request.Form["lastname"];
+    var position = Request.Form["position"];
+    var telephone = Request.Form["telephone"];
+    var findAll = Request.Form["findAll"];
+
+    var db = Database.Open("Centaur");
+    var sql = "";
+    List<dynamic> people = new List<dynamic>();
+
+    if (findAll == "true")
+    {
+        sql = @"Select * from ActiveDirectoryUser";
+
+    }
+    else
+    {
+        sql = @"Select * from ActiveDirectoryUser where firstname = @0 OR lastname = @1 OR position = @2 OR  telephone = @3";
+    }
+
+
+    var results = db.Query(sql, firstName, lastName, position, telephone);
+
+    //dynamic per = null;
+
+    //foreach (var person in results)
+    //{
+    var per = results.Select(x => new
+    {
+        firstname = x.firstName,
+        lastname = x.lastname,
+        position = x.position,
+        telephone = x.telephone
+    });
+
+    //people.Add(per);
+
+
+    Json.Write(per, Response.Output);
+
+
+
+}
