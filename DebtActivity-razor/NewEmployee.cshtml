@@ -22,6 +22,7 @@
         .emp-card-body{
             background: #ffffff;
         }
+
         b {
             color: blueviolet;
         }
@@ -38,6 +39,17 @@
             /*padding-right: 24px;*/
         }
 
+        emp-overlay {
+            background: grey; 
+            background-image: url(/Images/green-checkmark.png);
+            opacity: 0.4;
+            position: fixed;
+            display: none;
+            z-index: 2;
+
+            
+        }
+
         input, button {
             float: right;
             grid-column: 2 / 3;
@@ -52,7 +64,6 @@
                     <b>Add New Employee</b> <span class="fa fa-chevron-down float-right"></span>
                 </div>
                 <div class='card-body'>
-                    <span class="something">Testing</span>
                     <div>
                         <form method="post" action="~/Services/CreateNewEmployee.cshtml">
                             <label for="firstname">First Name: </label>
@@ -105,13 +116,16 @@
             </div>
             @*<div class="container">*@
                 @*<div class="row">*@
-                    <div class="col-md-10">
-                        <div class="card-header ">
+                    <div id="employees" class="col-md-10">
+                        <div  class="card-header ">
                             The following employees were found:
                         </div>
                         <div class="card-body empArea">
-                            First employee:
-                            @*@foreach (var emp in Employees)*@
+                           <div class="container emp-container">
+                               <div class="row emp-row">
+
+                               </div>
+                           </div>
                         </div>
                     </div>
                 @*</div>*@
@@ -120,10 +134,22 @@
     </div>
 }
     <script>
-        $('.card-header').on("click", function (e) {
-            $(this).parents().children('.card-body').slideToggle();
-            $(this).find("span.fa-chevron-down").toggleClass("fa-flip-vertical")
+        $(document).off('click', '.card-header');
+
+        $('#employees, [class^="col-"] ').on("click",".card-header", function (e) {
+                console.log("this is a click");
+                $(this).parent().children('.card-body').slideToggle();
+                $(this).find("span.fa-chevron-down").toggleClass("fa-flip-vertical")
         })
+
+        $('#employees').on('click', '.emp-card-body', function () {
+            console.log("body clicked on");
+            $(this).parent().children('.emp-card-body').toggleClass('emp-card-body emp-overlay')
+            //$(this).parent().children('.emp-card-body').css({ "background": "grey", "background-image": "url(/Images/green-checkmark.png)", "opacity": "0.4" });
+            $(this).parent().children('.emp-overlay').attr("style", "display: block");
+        })
+
+
 
 
         $('#SearchEmpbtn').on("click", function () {
@@ -143,10 +169,10 @@
                         var div1 = $("<div>", { "class": "card-header" }).text(item.firstname);
                         var div2 = $("<div>", { "class": "card-body emp-card-body " }).text(item.position + " " + item.telephone);
                         var span0 = $("<span>", {"class": "fa fa-chevron-down float-right"})
-                        $(".empArea").append(div0);
+                        $(".emp-row").append(div0);
                         div0.append(div1, div2);
                         div1.append(span0);
-                        console.log(info);
+                        console.log(per);
                     }
                     )
                     
@@ -168,10 +194,10 @@
                 success: function (per) {                    
                     $.each(JSON.parse(per), function (i, item) {
                         var div0 = $("<div>", { "class": "col-md-4" })
-                        var div1 = $("<div>", { "class": "card-header" }).text(item.firstname);
-                        var div2 = $("<div>", { "class": "card-body emp-card-body " }).text(item.position + " " + item.telephone);
+                        var div1 = $("<div>", { "class": "card-header emp-card-header" }).text(item.firstname);
+                        var div2 = $("<div>", { "class": "card-body emp-card-body emp-overlay" }).text(item.position + " " + item.telephone);
                         var span0 = $("<span>", { "class": "fa fa-chevron-down float-right" })
-                        $(".empArea").append(div0);
+                        $(".emp-row").append(div0);
                         div0.append(div1, div2);
                         div1.append(span0);
                     }
