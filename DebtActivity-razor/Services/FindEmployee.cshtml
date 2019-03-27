@@ -3,15 +3,17 @@
 
     // var empployee = Json.Decode();
 
-    string firstName = Request.Form["firstname"];
+    string firstName = Request.Form["firstnamesrch"];
     var lastName = Request.Form["lastname"];
     var position = Request.Form["position"];
     var telephone = Request.Form["telephone"];
     var findAll = Request.Form["findAll"];
 
+    
+    
+
     var db = Database.Open("Centaur");
     var sql = "";
-    List<dynamic> people = new List<dynamic>();
 
     if (findAll == "true")
     {
@@ -26,23 +28,13 @@
 
     var results = db.Query(sql, firstName, lastName, position, telephone);
 
-    //dynamic per = null;
-
-    //foreach (var person in results)
-    //{
     var per = results.Select(x => new
     {
         firstname = x.firstName,
         lastname = x.lastname,
         position = x.position,
-        telephone = x.telephone
+        telephone = x.telephone,
+        numUsers = results.Count()
     });
-
-    //people.Add(per);
-
-
     Json.Write(per, Response.Output);
-
-
-
 }

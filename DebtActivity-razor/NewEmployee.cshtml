@@ -63,24 +63,16 @@
                 <div class="card-header ">
                     <b>Add New Employee</b> <span class="fa fa-chevron-down float-right"></span>
                 </div>
-                <div class='card-body'>
-                    <div>
-                        <form method="post" action="~/Services/CreateNewEmployee.cshtml">
-                            <label for="firstname">First Name: </label>
-                            <input id="firstnameCreate" type="text" name="firstname" />
+                <div class='card-body'>                   
+                            <label for="firstname-add">First Name: </label>
+                            <input id="firstname-add" type="text" name="firstnameAdd" />
                             <label for="lastname">Last Name: </label>
                             <input id="lastname" type="text" name="lastname"/>
                             <label for="position">Position: </label>
                             <input id="position" type="text" name="position" />
                             <label for="telephone">Telephone: </label>
                             <input id="telephone" type="text" name="telephone" />
-
-                                <button id="createEmpbtn" class="btn-primary" type="submit">Create Employee</button>
-
-
-                        </form>
-
-                    </div>
+                            <button id="createEmpbtn" class="btn-primary" type="submit">Create Employee</button>
                 </div>
             </div>
             <div class="col-md-5">
@@ -89,8 +81,8 @@
                 </div>
                 <div class='card-body '>
                     @*<form @*method="post" action="">*@
-                        <label for="firstname">First Name: </label>
-                        <input id="firstname" type="text" name="firstnameSearch" />
+                        <label for="firstnamesrch">First Name: </label>
+                        <input id="firstnamesrch" type="text" name="firstnamesrch" />
                         <label for="lastname">Last Name: </label>
                         <input id="lastname" type="text" name="lastname" />
                         <label for="position">Position: </label>
@@ -116,7 +108,7 @@
             </div>
             @*<div class="container">*@
                 @*<div class="row">*@
-                    <div id="employees" class="col-md-10">
+                    <div id="employees" class="col-md-12">
                         <div  class="card-header ">
                             The following employees were found:
                         </div>
@@ -133,8 +125,15 @@
         </div>
     </div>
 }
+
     <script>
-        $(document).off('click', '.card-header');
+        $(document).ready(function () {
+            toastr.info('Welcome to Employee Services');
+
+            
+        })
+
+        var worker;
 
         $('#employees, [class^="col-"] ').on("click",".card-header", function (e) {
                 console.log("this is a click");
@@ -142,14 +141,53 @@
                 $(this).find("span.fa-chevron-down").toggleClass("fa-flip-vertical")
         })
 
-        $('#employees').on('click', '.emp-card-body', function () {
+        $('#employees').on('click', '.emp-card-body', function (worker) {
             console.log("body clicked on");
+
+            if (worker.typeOf() == 'undefined') {
+                worker = new Worker('/scripts/worker.js');
+            }
+            
+            worker.onmessage = function (event) {
+                toastr.info("You have selected " + event.data + " users")
+            }
+            console.log(worker.onmessage);
+            
             $(this).parent().children('.emp-card-body').toggleClass('emp-card-body emp-overlay')
             //$(this).parent().children('.emp-card-body').css({ "background": "grey", "background-image": "url(/Images/green-checkmark.png)", "opacity": "0.4" });
             $(this).parent().children('.emp-overlay').attr("style", "display: block");
         })
 
 
+        function clearSearchfields() {
+            $('#firstnamesrch').val('');
+            $('#lastname').val('');
+            $('#position').val('');
+            $('#telephone').val('');
+        }
+
+
+        $('#createEmpbtn').on('click', function () {
+            $.ajax({
+                type: 'POST',
+                datatype: 'json',
+                data: {
+                    firstNameAdd: $('#firstname-add').val(),
+                    lastname: $('#lastname').val(),
+                    position: $('#position').val(),
+                    telephone: $('#telephone').val()
+                },
+                url: '/Services/CreateNewEmployee',
+                success: function (message) {
+                    console.log(message);
+                    toastr.success(message);
+                },
+                error: function () {
+                    toastr.error('User was not created');
+                }
+            })
+
+        })
 
 
         $('#SearchEmpbtn').on("click", function () {
@@ -157,28 +195,29 @@
                 type: 'POST',
                 datatype: 'json',
                 data: {
-                    firstname: $('#firstname').val(),
+                    firstnamesrch: $('#firstnamesrch').val(),
                     lastname: $('#lastname').val(),
                     position: $('#position').val(),
                     telephone: $('#telephone').val()
                 },
                 url: '/Services/FindEmployee',
-                success: function (per) {
+                success: function (per) {       
                     $.each(JSON.parse(per), function (i, item) {
+                        clearSearchfields();                     
+
                         var div0 = $("<div>", { "class": "col-md-4" })
                         var div1 = $("<div>", { "class": "card-header" }).text(item.firstname);
                         var div2 = $("<div>", { "class": "card-body emp-card-body " }).text(item.position + " " + item.telephone);
                         var span0 = $("<span>", {"class": "fa fa-chevron-down float-right"})
                         $(".emp-row").append(div0);
                         div0.append(div1, div2);
-                        div1.append(span0);
-                        console.log(per);
-                    }
-                    )
-                    
+                        div1.append(span0);                       
+                    })
+                    var obj = JSON.parse(per);
+                    toastr.info(obj[0].numUsers + " users found")
                 },
                 error: function () {
-                    alert('data did not send');
+                    toastr.error('User not found');
                 }
             })
         })
@@ -191,7 +230,9 @@
                     findAll: "true"
                 },
                 url: '/Services/FindEmployee',
-                success: function (per) {                    
+                success: function (per) {
+                    var obj = JSON.parse(per);
+                    toastr.info(obj[0].numUsers + " users found") 
                     $.each(JSON.parse(per), function (i, item) {
                         var div0 = $("<div>", { "class": "col-md-4" })
                         var div1 = $("<div>", { "class": "card-header emp-card-header" }).text(item.firstname);
