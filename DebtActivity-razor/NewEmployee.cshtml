@@ -64,15 +64,15 @@
                     <b>Add New Employee</b> <span class="fa fa-chevron-down float-right"></span>
                 </div>
                 <div class='card-body'>                   
-                            <label for="firstname-add">First Name: </label>
-                            <input id="firstname-add" type="text" name="firstnameAdd" />
-                            <label for="lastname">Last Name: </label>
-                            <input id="lastname" type="text" name="lastname"/>
-                            <label for="position">Position: </label>
-                            <input id="position" type="text" name="position" />
-                            <label for="telephone">Telephone: </label>
-                            <input id="telephone" type="text" name="telephone" />
-                            <button id="createEmpbtn" class="btn-primary" type="submit">Create Employee</button>
+                            <label for="firstnameAdd">First Name: </label>
+                            <input id="firstnameAdd" type="text" name="firstnameAdd" />
+                            <label for="lastnameAdd">Last Name: </label>
+                            <input id="lastnameAdd" type="text" name="lastnameAdd"/>
+                            <label for="positionAdd">Position: </label>
+                            <input id="positionAdd" type="text" name="positionAdd" />
+                            <label for="telephoneAdd">Telephone: </label>
+                            <input id="telephoneAdd" type="text" name="telephoneAdd" />
+                            <button id="createEmpbtnAdd" class="btn-primary" type="submit">Create Employee</button>
                 </div>
             </div>
             <div class="col-md-5">
@@ -83,12 +83,12 @@
                     @*<form @*method="post" action="">*@
                         <label for="firstnamesrch">First Name: </label>
                         <input id="firstnamesrch" type="text" name="firstnamesrch" />
-                        <label for="lastname">Last Name: </label>
-                        <input id="lastname" type="text" name="lastname" />
-                        <label for="position">Position: </label>
-                        <input id="position" type="text" name="position" />
-                        <label for="telephone">Telephone: </label>
-                        <input id="telephone" type="text" name="telephone" />
+                        <label for="lastnamesrch">Last Name: </label>
+                        <input id="lastnamesrch" type="text" name="lastnamesrch" />
+                        <label for="positionsrch">Position: </label>
+                        <input id="positionsrch" type="text" name="positionsrch" />
+                        <label for="telephonesrch">Telephone: </label>
+                        <input id="telephonesrch" type="text" name="telephonesrch" />
                         
 
                         <button id="SearchEmpbtn" class="btn-primary" type="submit">Search Employee</button>
@@ -128,9 +128,7 @@
 
     <script>
         $(document).ready(function () {
-            toastr.info('Welcome to Employee Services');
-
-            
+            toastr.info('Welcome to Employee Services');            
         })
 
         var worker;
@@ -161,9 +159,16 @@
 
         function clearSearchfields() {
             $('#firstnamesrch').val('');
-            $('#lastname').val('');
-            $('#position').val('');
-            $('#telephone').val('');
+            $('#lastnamesrch').val('');
+            $('#positionsrch').val('');
+            $('#telephonesrch').val('');
+        }
+
+        function clearNewEmployeeFields() {
+            $('#firstnameAdd').val('');
+            $('#lastnameAdd').val('');
+            $('#positionAdd').val('');
+            $('#telephoneAdd').val('');
         }
 
 
@@ -172,14 +177,15 @@
                 type: 'POST',
                 datatype: 'json',
                 data: {
-                    firstNameAdd: $('#firstname-add').val(),
-                    lastname: $('#lastname').val(),
-                    position: $('#position').val(),
-                    telephone: $('#telephone').val()
+                    firstnameAdd: $('#firstnameAdd').val(),
+                    lastnameAdd: $('#lastnameAdd').val(),
+                    positionAdd: $('#positionAdd').val(),
+                    telephoneAdd: $('#telephoneAdd').val()
                 },
                 url: '/Services/CreateNewEmployee',
                 success: function (message) {
                     console.log(message);
+                    //clearNewEmployeeFields();
                     toastr.success(message);
                 },
                 error: function () {
@@ -196,9 +202,9 @@
                 datatype: 'json',
                 data: {
                     firstnamesrch: $('#firstnamesrch').val(),
-                    lastname: $('#lastname').val(),
-                    position: $('#position').val(),
-                    telephone: $('#telephone').val()
+                    lastnamesrch: $('#lastnamesrch').val(),
+                    positionsrch: $('#positionsrch').val(),
+                    telephonesrch: $('#telephonesrch').val()
                 },
                 url: '/Services/FindEmployee',
                 success: function (per) {       
